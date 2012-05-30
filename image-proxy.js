@@ -13,14 +13,15 @@ var image_proxy = function(imagePath){
     server.get('/image', function(req, res, next){
 
         var url = req.param('url');
-
+        var imageType;
+        
         // Add support for remote files by downloading the remote file to the images directory
         fs.stat(url, function(err, stat) {
 
             if (!err) {
 
                 var outputImage = gm(url);
-                var imageExt = path.extname(url);
+                imageType = path.extname(url).substring(1);
 
                 if(req.param('resize') == 1)
                 {
@@ -40,6 +41,12 @@ var image_proxy = function(imagePath){
                     outputImage = outputImage.type('grayscale');
                 }
 
+                if(req.param('format') != undefined)
+                {
+                    outputImage = outputImage.setFormat(req.param('format'));
+                    imageType = req.param('format');
+                }
+
                 outputImage.stream(renderImage);
 
             }else {
@@ -49,7 +56,7 @@ var image_proxy = function(imagePath){
 
         function renderImage(err, stdout, stderr) {
 
-            res.setHeader('Content-type', 'image/jpeg');
+            res.setHeader('Content-type', 'image/' + imageType);
 
             stdout.on('data', function(chunk) {
                 res.write(chunk);
