@@ -34,7 +34,6 @@ var image_proxy = function(imagePath){
                         else
                         {
                             // resize & render
-
                             gm(url).resize(newWidth, newHeight).stream( function(err, stdout, stderr) {
 
                                 res.setHeader('Content-type', 'image/jpeg');
@@ -59,7 +58,7 @@ var image_proxy = function(imagePath){
                 }
 
             }else {
-                res.send(err);
+                throw err;
             }
         });
     });
