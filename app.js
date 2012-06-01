@@ -1,10 +1,12 @@
-
-/**
- * Module dependencies.
- */
-
 var image_proxy = require('./image-proxy');
 
-image_proxy.server().listen(3000, function(){
-    console.log("Express server listening");
+var express = require('express');
+var app = express.createServer();
+
+app.get('/image', image_proxy.run);
+
+app.get('/test', function(req, res){
+    res.render('test.jade', { layout: false });
 });
+
+app.listen(3000);

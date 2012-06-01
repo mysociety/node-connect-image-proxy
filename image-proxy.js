@@ -1,24 +1,25 @@
-var express       = require('express'),
-fs                = require('fs'),
+var fs            = require('fs'),
 path              = require('path'),
+mime              = require('mime'),
 gm                = require('gm');
 
-var server = express.createServer();
+var imagePath;
 
-var image_proxy = function(imagePath){
+var run = function(req, res){
 
-    if(imagePath == undefined)
-        imagePath = "\img\\";
-
-    server.get('/image', function(req, res, next){
+        if(imagePath == undefined)
+            imagePath = "\public\images\\";
 
         var url = req.param('url');
         var imageType;
-        
+
         // Add support for remote files by downloading the remote file to the images directory
         fs.stat(url, function(err, stat) {
 
             if (!err) {
+
+                if(!validateMime(url))
+                    throw "Error: Unsupported file type.";
 
                 var outputImage = gm(url);
                 imageType = path.extname(url).substring(1);
@@ -65,9 +66,17 @@ var image_proxy = function(imagePath){
                 res.end();
             });
         }
-    });
-
-    return server;
 };
 
-exports.server = image_proxy;
+function validateMime(url)
+{
+    var type = mime.lookup(url);
+    var validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+
+    if(validTypes.indexOf(type) == -1)
+        return false;
+    else
+        return true;
+}
+
+exports.run = run;
