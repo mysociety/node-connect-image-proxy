@@ -1,82 +1,96 @@
 var fs            = require('fs'),
 path              = require('path'),
 mime              = require('mime'),
+url              = require('url'),
+http              = require('http'),
 gm                = require('gm');
-
-var imagePath;
 
 var run = function(req, res){
 
-        if(imagePath == undefined)
-            imagePath = "\public\images\\";
+    var remoteUrl = decodeURI(req.param('url'));
+    var urlObject = url.parse(remoteUrl);
+    var options = urlObject;
+    var fileExt = path.extname(remoteUrl);
 
-        var url = req.param('url');
-        var imageType;
+    http.get(options, function(res) {
 
-        // Add support for remote files by downloading the remote file to the images directory
-        fs.stat(url, function(err, stat) {
+        var localFile = getRandomFileName(fileExt);
+        var file = fs.createWriteStream(localFile);
 
-            if (!err) {
+        res.on('data', function(data) {
+            file.write(data);
+        }).on('end', function() {
 
-                if(!validateMime(url))
-                    throw "Error: Unsupported file type.";
+            file.end();
 
-                var outputImage = gm(url);
-                imageType = path.extname(url).substring(1);
+            if(!validateMime(localFile))
+                throw "Error: Unsupported file type.";
 
-                if(req.param('resize') == 1)
+            var outputImage = gm(localFile);
+
+            if(req.param('resize') == 1)
+            {
+                var newWidth = req.param('width');
+                var newHeight = req.param('height');
+
+                if(newHeight == null && newWidth == null)
+                    throw("Atleast one parameter from height or width should be defined.");
+                else
                 {
-                    var newWidth = req.param('width');
-                    var newHeight = req.param('height');
-
-                    if(newHeight == null && newWidth == null)
-                        throw("Atleast one parameter from height or width should be defined.");
-                    else
-                    {
-                        outputImage = outputImage.resize(newWidth, newHeight);
-                    }
+                    outputImage = outputImage.resize(newWidth, newHeight);
                 }
-
-                if(req.param('grayscale') == 1)
-                {
-                    outputImage = outputImage.type('grayscale');
-                }
-
-                if(req.param('format') != undefined)
-                {
-                    outputImage = outputImage.setFormat(req.param('format'));
-                    imageType = req.param('format');
-                }
-
-                outputImage.stream(renderImage);
-
-            }else {
-                throw err;
             }
+
+            if(req.param('grayscale') == 1)
+            {
+                outputImage = outputImage.type('grayscale');
+            }
+
+            if(req.param('format') != undefined)
+            {
+                outputImage = outputImage.setFormat(req.param('format'));
+                imageType = req.param('format');
+            }
+
+//            fs.unlink(localFile, function (err) {
+//              if (err) throw err;
+//            });
+
+            outputImage.stream(renderImage);
         });
 
-        function renderImage(err, stdout, stderr) {
+    }).on('error', function(e) {
+        throw('File cannot be downloaded: ' + e.message)
+    });
 
-            res.setHeader('Content-type', 'image/' + imageType);
+    function renderImage(err, stdout, stderr) {
 
-            stdout.on('data', function(chunk) {
-                res.write(chunk);
-            });
-            stdout.on('end', function() {
-                res.end();
-            });
-        }
+        res.setHeader('Content-type', 'image/' + fileExt.substring(1));
+
+        stdout.on('data', function(chunk) {
+            res.write(chunk);
+        });
+        stdout.on('end', function() {
+            res.end();
+        });
+    }
+
 };
 
-function validateMime(url)
+function validateMime(name)
 {
-    var type = mime.lookup(url);
+    var type = mime.lookup(name);
     var validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
 
     if(validTypes.indexOf(type) == -1)
         return false;
     else
         return true;
+}
+
+function getRandomFileName(ext)
+{
+    return __dirname + "/temp/" + Math.floor(Math.random()*100000000) + ext;
 }
 
 exports.run = run;
