@@ -1,4 +1,4 @@
-var image_proxy = require('./../image-remote-proxy');
+var image_proxy = require('./../image-proxy');
 
 var express = require('express');
 var app = express.createServer();
