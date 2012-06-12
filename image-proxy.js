@@ -1,17 +1,24 @@
 var fs            = require('fs'),
 path              = require('path'),
 mime              = require('mime'),
-url              = require('url'),
+url               = require('url'),
 http              = require('http'),
 gm                = require('gm');
 
 var run = function(req, res){
-
+    
     var remoteUrl = decodeURI(req.param('url'));
     var urlObject = url.parse(remoteUrl);
     var options = urlObject;
     var fileExt = path.extname(remoteUrl);
+    var urlHost = urlObject.hostname;
 
+    if(urlObject.port != undefined)
+         urlHost += ":"+urlObject.port;
+
+    if(urlHost != req.headers.host)
+        throw('Error: Only local proxy allowed.' +  urlHost + "  " + req.headers.host);
+    
     http.get(options, function(res) {
 
         var localFile = getRandomFileName(fileExt);
@@ -52,9 +59,9 @@ var run = function(req, res){
                 imageType = req.param('format');
             }
 
-//            fs.unlink(localFile, function (err) {
-//              if (err) throw err;
-//            });
+            fs.unlink(localFile, function (err) {
+              if (err) throw err;
+            });
 
             outputImage.stream(renderImage);
         });

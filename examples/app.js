@@ -7,6 +7,7 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.set('views', __dirname + '/views');
   app.set('view options', { layout: false, pretty: true});
+  app.use("/images", express.static(__dirname + '/public'));
 });
 
 
