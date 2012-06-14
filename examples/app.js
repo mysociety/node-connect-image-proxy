@@ -16,7 +16,7 @@ app.configure(function(){
 });
 
 
-app.get('/image', image_proxy.run);
+app.get('/proxy', image_proxy.run);
 
 app.get('/', function(req, res){
     res.render('index.jade');
