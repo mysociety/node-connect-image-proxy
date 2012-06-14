@@ -7,7 +7,12 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.set('views', __dirname + '/views');
   app.set('view options', { layout: false, pretty: true});
+
+  app.use(express.logger('dev'));
+  app.use(express.favicon());
   app.use("/images", express.static(__dirname + '/public'));
+  app.use(app.router);
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 
@@ -18,3 +23,5 @@ app.get('/test', function(req, res){
 });
 
 app.listen(3000);
+
+console.log( "Example server started on: http://localhost:3000" );
