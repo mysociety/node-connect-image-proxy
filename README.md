@@ -23,6 +23,11 @@ It provides:
   * Conversion + Grayscale + Resize: hostname/route/?url=[url]&format=png&grayscale=1&resize=1&height=[height]&width=[width]
 
 
+## Example app
+
+There is an example app in the `examples` folder that demonstrates the basic features.
+
+
 ## TODO
 
   * Allow user to specify a list of hostnames to proxy for, not just the same host as the proxy is running on.
