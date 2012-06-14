@@ -18,8 +18,8 @@ app.configure(function(){
 
 app.get('/image', image_proxy.run);
 
-app.get('/test', function(req, res){
-    res.render('test.jade');
+app.get('/', function(req, res){
+    res.render('index.jade');
 });
 
 app.listen(3000);
