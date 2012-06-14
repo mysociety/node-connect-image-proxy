@@ -11,12 +11,14 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.favicon());
   app.use("/images", express.static(__dirname + '/public'));
+
+  // Use the proxy
+  app.use('/proxy', image_proxy() );
+
   app.use(app.router);
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
-
-app.get('/proxy', image_proxy.run);
 
 app.get('/', function(req, res){
     res.render('index.jade');

@@ -14,6 +14,18 @@ It provides:
 
     npm install connect-image-proxy
 
+and then in your code (eg an Express app):
+
+    var image_proxy = require('connect-image-proxy');
+
+    app.configure(function(){
+      ....
+
+      // mount the proxy at '/proxy'
+      app.use( '/proxy', image_proxy() );
+      ....
+    });
+
 
 ## Usage
 
