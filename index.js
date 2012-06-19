@@ -1,1 +1,1 @@
-lib/image-proxy.js
+module.exports = require('./lib/image-proxy');
