@@ -21,3 +21,12 @@ img(src="/proxy/?url=http%3A%2F%2Flocalhost%3A3000%2Fimages%2Ftest.jpg&format=pn
 h2 Resize + Grayscale + GIF Conversion
 
 img(src="/proxy/?url=http%3A%2F%2Flocalhost%3A3000%2Fimages%2Ftest.jpg&format=gif&resize=1&height=210&grayscale=1")
+
+
+h2 Image sent without suffix
+
+img(src="/proxy/?url=http%3A%2F%2Flocalhost%3A3000%2Fno_suffix_jpg&resize=1&height=120")
+
+h2 Image that does not exist
+
+img(src="/proxy/?url=http%3A%2F%2Flocalhost%3A3000%2Fdoes_not_exist&resize=1&height=120")
