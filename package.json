@@ -1,6 +1,6 @@
 {
   "name": "connect-image-proxy",
-  "version": "0.0.4",
+  "version": "0.0.5",
 
   "description": "Middleware for proxying and manipulating images.",
   "keywords": ["images", "proxy", "graphicsmagick", "express", "middleware", "connect", "server-side"],
