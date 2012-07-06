@@ -21,11 +21,11 @@ app.configure(function(){
 
 
 app.get('/', function(req, res){
-    res.render('index.jade');
+  res.render('index.jade');
 });
 
 app.get('/no_suffix_jpg', function (req, res) {
-  res.sendfile(__dirname + '/public/test.jpg');
+  res.sendfile(__dirname + '/public/landscape.jpg');
 });
 
 app.listen(3000);
