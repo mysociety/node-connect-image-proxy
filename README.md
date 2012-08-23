@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/mysociety/node-connect-image-proxy.png)](http://travis-ci.org/mysociety/node-connect-image-proxy)
 # Middleware for proxying and manipulating images
 
 This module allows you to manipulate and convert images on the fly.
