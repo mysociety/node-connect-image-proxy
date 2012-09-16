@@ -10,21 +10,36 @@ It provides:
   * Only proxies images from the same domain that the proxy is running on - not an open proxy (this could be easily changed in future)
 
 
-## Installation
+## Installation & Configuration
 
     npm install connect-image-proxy
 
+You may have to install graphicsmagick too:
+
+    apt-get install graphicsmagick
+
 and then in your code (eg an Express app):
 
-    var image_proxy = require('connect-image-proxy');
+    var ImageProxy = require('connect-image-proxy');
 
     app.configure(function(){
       ....
 
+      var myproxy = new ImageProxy({
+        hostsWhitelist: ['mysite.com', 'images.mysite.com'],
+        headers: {'Cache-Control': 'max-age=31536000'},
+      });
+
       // mount the proxy at '/proxy'
-      app.use( '/proxy', image_proxy() );
+      app.use( '/proxy', myproxy.requestHandler );
       ....
     });
+
+### Configuration Options
+
+  * validMimeTypes: list of valid MIME types.  Defaults to ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].
+  * hostsWhitelist: list of allowed hosts.  If not set, defaults to serving requests only for images on the same host as this server.
+  * headers: map of http headers to their values.  Note that Content-Type is always set to the appropriate MIME type.
 
 
 ## Usage
@@ -42,5 +57,5 @@ There is an example app in the `examples` folder that demonstrates the basic fea
 
 ## TODO
 
-  * Allow user to specify a list of hostnames to proxy for, not just the same host as the proxy is running on.
-  * Add proper caching headers, or at least repeat the cache headers of the original image.
+  * https support
+  * pass along headers by default?
