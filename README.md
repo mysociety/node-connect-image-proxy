@@ -57,5 +57,4 @@ There is an example app in the `examples` folder that demonstrates the basic fea
 
 ## TODO
 
-  * https support
   * pass along headers by default?
