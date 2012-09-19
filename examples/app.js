@@ -1,4 +1,4 @@
-var image_proxy = require('..');
+var ImageProxy = require('..');
 
 var express = require('express');
 var app = express.createServer();
@@ -13,7 +13,11 @@ app.configure(function(){
   app.use("/images", express.static(__dirname + '/public'));
 
   // Use the proxy
-  app.use('/proxy', image_proxy() );
+  var myproxy = new ImageProxy({
+    hostsWhitelist: ['www.google.com', 'localhost:3000'],
+    headers: {'Cache-Control': 'max-age=31536000'},
+  });
+  app.use('/proxy', myproxy.requestHandler);
 
   app.use(app.router);
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
